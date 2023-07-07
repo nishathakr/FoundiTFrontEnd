@@ -61,15 +61,23 @@ const Index = () => {
     <Dialog open={open} onClose={handleClose}>
     <DialogTitle >
     <h6 className='float-right'>
-      <li>
-        New to foundit?
-        <a href="jobs.html"> Register</a>
-        
-      </li>
+    <li>
+
+     New to foundit?
+
+      <a className='color' style={{ color: '#ed563b' }}> <Register/> </a>
+
+
+           </li>
       <br /><br /><br />
     
     </h6>
-    <h1>
+    <h1 className=' color: #333;
+      font-size: 24px;
+      text-align: center;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border-radius: 5px;'>
  Login
 </h1>
 <br></br>
@@ -181,9 +189,9 @@ const Index = () => {
             </li>
 
             <li>
+    <a ><Register /></a>   
+</li>
 
-              <a><Register /></a>   
-        </li>
             
               <li>
                 <a href="contact.html">Contact</a>
