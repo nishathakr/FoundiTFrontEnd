@@ -78,7 +78,7 @@ const Index = () => {
       padding: 20px;
       background-color: #f2f2f2;
       border-radius: 5px;'>
- Login
+Sign In
 </h1>
 <br></br>
 <a
@@ -152,31 +152,19 @@ const Index = () => {
 
 
   <header className="header-area header-sticky">
+    
     <div className="container">
       <div className="row">
         <div className="col-12 ">
           <nav className="main-nav">
+            
             {/* ***** Logo Start ***** */}
-            <a  href="index.html" className="logo">
-              
+            <a  href="/index" className="logo">
+              Found<em>IT</em>
             <div className="monster-logo primary-logo">
 
               
-             {/* <a
-                 href="/"
-                rel="noreferrer"
-                aria-label="foundit header logo"
-                onclick="window.homeBehavior.home.tracking.trackMonsterLogo()"
-                className="logo-normall"
-                >
-    <img
-      src="//media.foundit.in/trex/public/default/images/companyLogo.svg"
-      width={345}
-      height={45}
-      alt="foundit logo"
-    />
-    
-  </a> */}
+           
 </div>
 
             </a>
@@ -189,7 +177,7 @@ const Index = () => {
             </li>
 
             <li>
-    <a ><Register /></a>   
+                            <a ><Register /></a>   
 </li>
 
             
@@ -218,9 +206,9 @@ const Index = () => {
       <h2>
         Find the perfect <em>Job</em>
       </h2>
-      <div className="main-button">
+      {/* <div className="main-button">
         <a href="contact.html">Contact Us</a>
-      </div>
+      </div> */}
     </div>
   </div>
 </div>
