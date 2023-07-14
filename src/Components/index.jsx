@@ -9,7 +9,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import '@fortawesome/fontawesome-free/css/all.css';
+import axios from 'axios';
 import Register from '../Register';
+
 const Index = () => {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -29,9 +31,9 @@ const Index = () => {
     setPasswordError('');
   };
 
-  const validateForm = () => {
+  const validateForm = async () => {
     let isValid = true;
-  
+
     // Validate email
     if (!email) {
       setEmailError('Email is required');
@@ -42,7 +44,7 @@ const Index = () => {
     } else {
       setEmailError('');
     }
-  
+
     // Validate password
     if (!password) {
       setPasswordError('Password is required');
@@ -50,10 +52,26 @@ const Index = () => {
     } else {
       setPasswordError('');
     }
-  
+
+    if (isValid) {
+      const formData = {
+        email: email,
+        password: password
+      };
+
+      try {
+        console.log(formData);
+        const response = await axios.post("https://localhost:7177/api/Login/Login", formData);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     return isValid;
   };
 
+  
   return (
     <>
     <>
