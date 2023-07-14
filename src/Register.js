@@ -22,7 +22,7 @@ import OtpInput from 'react-otp-input';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
-
+import axios from 'axios';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -168,11 +168,12 @@ export default function Register() {
   const [scroll, setScroll] = React.useState('paper');
   const [activeStep, setActiveStep] = React.useState(0);
   const [showPreviousFields, setShowPreviousFields] = React.useState(true);
-  const [resume, setResume] = React.useState('');
-  const [fullName, setFullName] = React.useState('');
+
+  //const [imageFile, setimageFile] = React.useState('');
+  const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [mobile, setMobile] = React.useState('');
+  const [phoneNumber, setPhoneNumber] = React.useState('');
   const [gender, setGender] = React.useState('female');
   const [educationtype, seteducationtype] = React.useState('full time');
   
@@ -204,11 +205,11 @@ export default function Register() {
 
     if (activeStep === 0) {
       // Check required fields for Personal Information step
-      if (!resume) {
-        errors.resumeError = true;
-        isValid = false;
-      }
-      if (!fullName) {
+      // if (!imageFile) {
+      //   errors.resumeError = true;
+      //   isValid = false;
+      // }
+      if (!name) {
         errors.fullNameError = true;
         isValid = false;
       }
@@ -220,7 +221,7 @@ export default function Register() {
         errors.passwordError = true;
         isValid = false;
       }
-      if (!mobile) {
+      if (!phoneNumber) {
         errors.mobileError = true;
         isValid = false;
       }
@@ -262,6 +263,46 @@ export default function Register() {
     }
   };
 
+
+
+  const handleSubmit = async () => {
+    try {
+      const formData = new FormData();
+      //formData.append('ImageFile', imageFile);
+      formData.append('Name', name);
+      formData.append('Email', email);
+      formData.append('Password', password);
+      formData.append('PhoneNumber', phoneNumber);
+      formData.append('Gender', gender);
+
+      // Append other relevant fields from the form
+  
+      const response = await axios.post('https://localhost:7177/RegisterUser', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+  
+      console.log(response.data);
+      // Handle successful response
+    } catch (error) {
+      if (error.response) {
+        console.error('Response Error:', error.response.data);
+        // Handle validation errors
+        if (error.response.status === 400 && error.response.data.errors) {
+          const validationErrors = error.response.data.errors;
+          console.log(validationErrors);
+          // Display the validation errors to the user or handle them appropriately
+        }
+      } else if (error.request) {
+        console.error('Request Error:', error.request);
+        // Handle request error
+      } else {
+        console.error('Error:', error.message);
+        // Handle other errors
+      }
+    }
+  };
   const descriptionElementRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -328,7 +369,7 @@ export default function Register() {
             <h4 className='text-primary '>Basic Information</h4>
             <p></p>
             <br></br>
-         <TextField
+         {/* <TextField
                 autoFocus
                 margin="dense"
                 id="Upload Resume"
@@ -336,11 +377,11 @@ export default function Register() {
                 type="file"
                 fullWidth
                 variant="standard"
-                value={resume}
+                value={imageFile}
                 error={formErrors.resumeError}
                 helperText={formErrors.resumeError ? 'Please upload a resume' : ''}
-                onChange={(e) => setResume(e.target.value)}
-              />
+                onChange={(e) => setimageFile(e.target.value)}
+              /> */}
 
               <TextField
                 autoFocus
@@ -350,10 +391,10 @@ export default function Register() {
                 type="text"
                 fullWidth
                 variant="standard"
-                value={fullName}
+                value={name}
                 error={formErrors.fullNameError}
                 helperText={formErrors.fullNameError ? 'Please enter your full name' : ''}
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
 
               <TextField
@@ -392,10 +433,10 @@ export default function Register() {
                 type="Number"
                 fullWidth
                 variant="standard"
-                value={mobile}
+                value={phoneNumber}
                 error={formErrors.mobileError}
                 helperText={formErrors.mobileError ? 'Please enter a valid mobile number' : ''}
-                onChange={(e) => setMobile(e.target.value)}
+                onChange={(e) => setPhoneNumber(e.target.value)}
               />
 <br></br> <br></br>
 <FormControl
@@ -420,11 +461,7 @@ export default function Register() {
       control={<Radio />}
       label="Male"
     />
-    <FormControlLabel
-      value="other"
-      control={<Radio />}
-      label="Other"
-    />
+  
   </RadioGroup>
   {formErrors.genderError && (
     <p style={{ color: 'red', margin: '0' }}>
@@ -769,6 +806,7 @@ export default function Register() {
             <>
               <Button onClick={handleClose}>Cancel</Button>
               <Button onClick={handleContinue}>Continue</Button>
+              <Button onClick={handleSubmit}>Submit</Button>
             </>
           ) : (
             <>
@@ -776,7 +814,9 @@ export default function Register() {
                 <Button onClick={() => setShowPreviousFields(true)}>Back</Button>
               )} */}
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleContinue}>Continue</Button>
+              <Button onClick={handleSubmit}>Continue</Button>
+              <Button onClick={handleSubmit}>Submit</Button>
+
             </>
           )}
         </DialogActions>
