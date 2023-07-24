@@ -7,8 +7,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
-
-function OtpModal() {
+import Swal from "sweetalert2";
+function ForgotPassword() {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -61,26 +61,37 @@ function OtpModal() {
       const data = {
         email: email,
         password: password,
+        confirmPassword:confirmPassword
       };
 
-      axios
-        .post('https://localhost:7177/api/Regsiter/api/ForgotPassword', data)
-        .then((response) => {
-          // Handle the API response here if needed
-          console.log('Password update success:', response.data);
-
-          // Close the modal after successful password update
-          handleClose();
-        })
-        .catch((error) => {
-          // Handle errors from the API here if needed
-          console.error('Password update failed:', error);
-        });
+      axios.post('https://localhost:7177/api/Regsiter/api/ForgotPassword', data)
+      .then((response) => {
+        debugger;
+        // Handle the API response here if needed
+        console.log('Password update success:', response.data);
+  
+        // Update the messageDiv with the success message
+        const messageDiv = document.getElementById('messageDiv');
+        messageDiv.innerText = "Password Updated successfully ";
+        messageDiv.style.display = "block"; // Show the messageDiv
+  
+        // Hide the messageDiv after 3 seconds
+        setTimeout(() => {
+          messageDiv.style.display = "none";
+        }, 4000);
+  
+       
+      })
+     
+  
+    // Close the modal after successful password update
+    handleClose();
     }
   };
 
   return (
     <div>
+       <div id="messageDiv" style={{ display: 'none', color: 'green' }}></div>
       <li onClick={handleClickOpen}>forgot password?</li>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle className='text-primary'>Update your password</DialogTitle>
@@ -137,4 +148,4 @@ function OtpModal() {
   );
 }
 
-export default OtpModal;
+export default ForgotPassword;

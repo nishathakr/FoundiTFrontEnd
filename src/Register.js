@@ -23,7 +23,8 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Checkbox from "@mui/material/Checkbox";
 import ListItemText from "@mui/material/ListItemText";
 import axios from "axios";
-
+import Otp from "./Components/otp";
+import Swal from "sweetalert2";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -360,6 +361,7 @@ export default function Register() {
 
   const handleSubmit = async () => {
     try {
+      debugger;
       const formData = new FormData();
       formData.append("ImageFile", imageFile);
       formData.append("Name", name);
@@ -395,13 +397,30 @@ export default function Register() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          
         }
+        
       );
 
       console.log(response.data);
-      // Handle successful response
+      if(response.status===200){
+        debugger;
+          handleClose();
+          Swal.fire({
+            title: "Registration Completed Successfully",
+            icon: "success",
+       
+          });
+    
+
+      }
+  
+    
     } catch (error) {
+     
+      handleClose();
       if (error.response) {
+        handleClose();
         console.error("Response Error:", error.response.data);
         // Handle validation errors
         if (error.response.status === 400 && error.response.data.errors) {
@@ -933,15 +952,14 @@ export default function Register() {
             </>
           ) : (
             <>
-              {/* {activeStep > 0 && (
-                <Button onClick={() => setShowPreviousFields(true)}>Back</Button>
-              )} */}
               <Button onClick={handleClose}>Cancel</Button>
-              {/* <Button onClick={handleContinue}>Continue</Button> */}
               {activeStep <= 2 ? (
                 <Button onClick={handleContinue}>Continue</Button>
               ) : (
-                <Button onClick={handleSubmit}>Register</Button>
+                <Button onClick={handleSubmit}>Register
+                
+                </Button>
+               
               )}
             </>
           )}

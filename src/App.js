@@ -3,11 +3,13 @@ import './App.css';
 import Index from './Components/index.jsx';
 import Login from './Components/login.js'
 import './'
-import OtpModal from './Components/otpmodal.js';
+
 
 import { BrowserRouter, Route,Routes } from 'react-router-dom';
 import index from './Components/index.jsx';
 import Register from './Register';
+import ForgotPassword from './Components/forgotpassword.js';
+import Otp from './Components/otp';
 // import Routes from './Routes'; 
 function App() {
   return (
@@ -17,7 +19,10 @@ function App() {
   <Route path='login'element={<Login/>}/>
   <Route path='index'element={<Index/>}/>
   <Route path='register'element={<Register/>}/>
-  <Route path='otpmodal'element={<OtpModal/>}/>
+  <Route path='forgotpassword'element={<ForgotPassword/>}/>
+  <Route path='otp'element={<Otp/>}/>
+
+
 
 
    <Route path=''element={<Index/>}/>

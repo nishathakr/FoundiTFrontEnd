@@ -22,7 +22,7 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import axios from "axios";
 
 import Register from "../Register";
-import OtpModal from "./otpmodal";
+import ForgotPassword from "./forgotpassword";
 
 import { ToastContainer, toast } from "react-toastify";
 
@@ -290,7 +290,7 @@ const Index = () => {
           <DialogActions>
   <div className="flex-grow-1">
     <li className="text-primary">
-    <OtpModal />
+    <ForgotPassword />
     </li>
   </div>
   <Button onClick={handleClose}>Cancel</Button>
