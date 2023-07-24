@@ -22,6 +22,7 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import axios from "axios";
 
 import Register from "../Register";
+import OtpModal from "./otpmodal";
 
 import { ToastContainer, toast } from "react-toastify";
 
@@ -285,26 +286,32 @@ const Index = () => {
               helperText={passwordError}
             />
           </DialogContent>
-
+        
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+  <div className="flex-grow-1">
+    <li className="text-primary">
+    <OtpModal />
+    </li>
+  </div>
+  <Button onClick={handleClose}>Cancel</Button>
 
-            <ToastContainer
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
+  <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    hideProgressBar
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+  />
 
-            <Button onClick={() => validateForm() }>
-              Login
-            </Button>
-          </DialogActions>
+  <Button onClick={() => validateForm()}>
+    Login
+  </Button>
+</DialogActions>
+
         </Dialog>
 
         <header className="header-area header-sticky">

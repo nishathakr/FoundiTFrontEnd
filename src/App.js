@@ -17,7 +17,7 @@ function App() {
   <Route path='login'element={<Login/>}/>
   <Route path='index'element={<Index/>}/>
   <Route path='register'element={<Register/>}/>
-  <Route path='otpverification'element={<OtpModal/>}/>
+  <Route path='otpmodal'element={<OtpModal/>}/>
 
 
    <Route path=''element={<Index/>}/>
