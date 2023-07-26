@@ -3,70 +3,88 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
 import OtpInput from 'react-otp-input';
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
-  
-
+import axios from 'axios';
+import Swal from "sweetalert2";
 function Otp() {
+  const [otp, setOtp] = useState('');
+  const [open, setOpen] = useState(false);
 
-    const [otp, setOtp] = useState('');
-    const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    const handleClickOpen = () => {
-      setOpen(true);
+  const handleSubmit = async () => {
+    const Data = {
+      otp: otp,
+      phoneNumber: localStorage.getItem('PhoneNumber'),
     };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
+
+    try {
+      const response = await axios.post(
+        'https://localhost:7177/api/Regsiter/OTPVerfication',
+        Data
+      );
+      console.log('Response from server:', response.data);
+      if(response.status===2000)
+      {
+
+        Swal.fire({
+          title: "Registration Completed Successfully",
+          icon: "success",
+     
+        });
+      }
+      handleClose();
+    } catch (error) {
+      Swal.fire({
+        title: "Registration Failed",
+        icon: "error",
+    });
+      console.error(error);
+    }
+  };
+
+  const smallBoxStyle = {
+    border: '1px solid #ccc',
+    padding: '50px',
+    borderRadius: '18px',
+    width: '500px', // Adjust the width as per your requirement
+    margin: 'auto',
+    marginTop: '30px',
+  };
+
   return (
-    <div>
-      {/* <Button variant="outlined" onClick={handleClickOpen}>
-        Slide in alert dialog
-      </Button> */}
-      <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-           <DialogTitle className='text-primary'>Enter Verification Code</DialogTitle>
-         
-           <p>We have sent an OTP to your phone number</p>
-           <DialogContent>
+    <div style={smallBoxStyle}>
+      <DialogTitle className="text-primary">Enter Verification Code</DialogTitle>
+
+      <DialogContent>
+        <p>We have sent an OTP to your phone number</p>
         <OtpInput
-                    value={otp}
-                    onChange={setOtp}
-                    numInputs={4}
-                    renderSeparator={<span>---</span>}
-                    renderInput={(props) => (
-                      <input
-                        {...props}
-                        style={{
-                          width: "60px",
-                          height: "40px",
-                          textAlign: "center",
-                          fontSize: "16px",
-                        }}
-                      />
-                    )}
-                  />
-            </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose}>Agree</Button>
-        </DialogActions>
-        
-      </Dialog>
+          value={otp}
+          onChange={setOtp}
+          numInputs={4}
+          renderSeparator={<span>---</span>}
+          renderInput={(props) => (
+            <input
+              {...props}
+              style={{
+                width: '60px',
+                height: '40px',
+                textAlign: 'center',
+                fontSize: '16px',
+              }}
+            />
+          )}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleSubmit}>Verify</Button>
+      </DialogActions>
     </div>
-  )
+  );
 }
 
-export default Otp
+export default Otp;

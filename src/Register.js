@@ -25,6 +25,8 @@ import ListItemText from "@mui/material/ListItemText";
 import axios from "axios";
 import Otp from "./Components/otp";
 import Swal from "sweetalert2";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -135,6 +137,9 @@ const names4 = [
 ];
 
 export default function Register() {
+
+const navigate =useNavigate();
+
   const [phoneNumber, setPhoneNumber] = React.useState("");
 
   const [personName, setPersonName] = React.useState([]);
@@ -290,6 +295,7 @@ export default function Register() {
     "Professional Details",
     "Education Details",
     "Job Preference",
+   
   ];
 
   const handleClickOpen = (scrollType) => () => {
@@ -339,10 +345,7 @@ export default function Register() {
       // Check required fields for Job Preference step
     } else if (activeStep === 4) {
       // Check required fields for Verification Center step
-      if (!otp) {
-        errors.otpError = true;
-        isValid = false;
-      }
+    
     }
 
     if (isValid) {
@@ -368,6 +371,7 @@ export default function Register() {
       formData.append("Email", email);
       formData.append("Password", password);
       formData.append("PhoneNumber", phoneNumber);
+      localStorage.setItem("PhoneNumber", phoneNumber)
       formData.append("Gender", gender);
       //Experince Fields
       formData.append("Experience", experience);
@@ -406,19 +410,21 @@ export default function Register() {
       if(response.status===200){
         debugger;
           handleClose();
+          
           Swal.fire({
             title: "Registration Completed Successfully",
             icon: "success",
        
           });
+          navigate('/Otp')
     
-
       }
   
     
     } catch (error) {
      
       handleClose();
+      navigate('/Otp')
       if (error.response) {
         handleClose();
         console.error("Response Error:", error.response.data);
