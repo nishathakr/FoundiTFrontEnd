@@ -23,10 +23,9 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Checkbox from "@mui/material/Checkbox";
 import ListItemText from "@mui/material/ListItemText";
 import axios from "axios";
-import Otp from "./Components/otp";
-import Swal from "sweetalert2";
-import { Navigate } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -137,9 +136,6 @@ const names4 = [
 ];
 
 export default function Register() {
-
-const navigate =useNavigate();
-
   const [phoneNumber, setPhoneNumber] = React.useState("");
 
   const [personName, setPersonName] = React.useState([]);
@@ -148,15 +144,30 @@ const navigate =useNavigate();
   const [personName3, setPersonName3] = React.useState([]);
   const [personName4, setPersonName4] = React.useState([]);
 
+  const [errors, setErrors] = useState({});
+
+  // Handle changes for each Select field
   const handleChange1 = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    setPersonName(event.target.value);
   };
+
+  const handleChange2 = (event) => {
+    setPersonName1(event.target.value);
+  };
+
+  const handleChange3 = (event) => {
+    setPersonName2(event.target.value);
+  };
+
+  const handleChange33 = (event) => {
+    setPersonName3(event.target.value);
+  };
+
+  const handleChange333 = (event) => {
+    setPersonName4(event.target.value);
+  };
+  
+  
   const handleChangePhoneNumber = (event) => {
     const {
       target: { value },
@@ -175,45 +186,6 @@ const navigate =useNavigate();
     }
   };
 
-  const handleChange2 = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName1(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
-
-  const handleChange3 = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName2(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
-
-  const handleChange33 = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName3(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
-
-  const handleChange333 = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName4(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
 
   const handleChange4 = (event) => {
     const {
@@ -247,7 +219,7 @@ const navigate =useNavigate();
     );
   };
 
-  const [location, setLocation] = React.useState([]);
+  const [location, setLocation] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState("paper");
   const [activeStep, setActiveStep] = React.useState(0);
@@ -265,8 +237,10 @@ const navigate =useNavigate();
   const [university, setUniversity] = React.useState("");
   const [graduationYear, setGraduationYear] = React.useState("");
 
-  const [experience, setExperience] = React.useState([]);
+  const [experience, setExperience] = React.useState("");
   const [educationtype, setEducationtype] = React.useState([]);
+  
+  const navigate = useNavigate();
 
   const handleChangeFile = (event) => {
     const file = event.target.files[0]; // Get the selected file from the event
@@ -281,6 +255,12 @@ const navigate =useNavigate();
     mobileError: false,
     genderError: false,
     experienceError: false,
+    locationError:false,
+    fieldOfStudyError:false,
+    universityError:false,
+    graduationYearError:false,
+    educationTypeError:false,
+    skillsError: false
   });
 
   const [jobPreference, setJobPreference] = React.useState({
@@ -295,7 +275,6 @@ const navigate =useNavigate();
     "Professional Details",
     "Education Details",
     "Job Preference",
-   
   ];
 
   const handleClickOpen = (scrollType) => () => {
@@ -339,14 +318,41 @@ const navigate =useNavigate();
         errors.experienceError = true;
         isValid = false;
       }
+      if (!location) {
+        errors.locationError = true;
+        isValid = false;
+      }
     } else if (activeStep === 2) {
-      // Check required fields for Education Details step
+      if(!highestQualification){
+      errors.highestQualificationError= true;
+      isValid = false; }
+
+       if(!fieldOfStudy){
+       errors.fieldOfStudyError= true;
+       isValid = false; }
+
+       if(!university){
+        errors.universityError= true;
+        isValid = false; }
+
+       if(!graduationYear){
+        errors.graduationYearError= true;
+        isValid = false; }
+          
+        
+       if(!educationtype){
+        errors.educationTypeError= true;
+        isValid = false; }
+       
     } else if (activeStep === 3) {
       // Check required fields for Job Preference step
     } else if (activeStep === 4) {
       // Check required fields for Verification Center step
-    
-    }
+      if (!otp) {
+        errors.otpError = true;
+        isValid = false;
+      }
+    } 
 
     if (isValid) {
       if (activeStep === steps.length - 1) {
@@ -362,16 +368,15 @@ const navigate =useNavigate();
     }
   };
 
+  
   const handleSubmit = async () => {
     try {
-      debugger;
       const formData = new FormData();
       formData.append("ImageFile", imageFile);
       formData.append("Name", name);
       formData.append("Email", email);
       formData.append("Password", password);
       formData.append("PhoneNumber", phoneNumber);
-      localStorage.setItem("PhoneNumber", phoneNumber)
       formData.append("Gender", gender);
       //Experince Fields
       formData.append("Experience", experience);
@@ -389,11 +394,10 @@ const navigate =useNavigate();
       formData.append("KeySkills", personName.join(","));
       formData.append("Industry", personName1.join(","));
       formData.append("Department", personName2.join(","));
-      formData.append("PrefrredRole", personName3.join(","));
+      formData.append("PrefrredRole", personName3.join(",")); 
       formData.append("PrefrredLocation", personName4.join(","));
 
       // Append other relevant fields from the form
-
       const response = await axios.post(
         "https://localhost:7177/api/Regsiter/api/RegisterUser",
         formData,
@@ -405,22 +409,15 @@ const navigate =useNavigate();
         }
         
       );
-
       console.log(response.data);
       if(response.status===200){
         debugger;
           handleClose();
+            navigate('/Otp')
           
-          Swal.fire({
-            title: "Registration Completed Successfully",
-            icon: "success",
-       
-          });
-          navigate('/Otp')
     
       }
-  
-    
+
     } catch (error) {
      
       handleClose();
@@ -443,6 +440,37 @@ const navigate =useNavigate();
       }
     }
   };
+
+
+  const validateFields = () => {
+    const newErrors = {};
+
+    if (personName.length === 0) {
+      newErrors.skillsError = 'Please select at least one Key Skill';
+    }
+
+    if (personName1.length === 0) {
+      newErrors.industryError = 'Please select Industry';
+    }
+
+    if (personName2.length === 0) {
+      newErrors.departmentError = 'Please select at least one Department/Function';
+    }
+
+    if (personName3.length === 0) {
+      newErrors.roleError = 'Please select at least one Preferred Role';
+    }
+
+    if (personName4.length === 0) {
+      newErrors.locationError = 'Please select at least one Preferred Location';
+    }
+
+    setErrors(newErrors);
+
+    
+    return Object.keys(newErrors).length === 0;
+  };
+  
   const descriptionElementRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -577,7 +605,7 @@ const navigate =useNavigate();
                 margin="dense"
                 id="Mobile Number"
                 label="Mobile Number"
-                type="tel" // Use type "tel" to indicate it's a telephone number
+                type="phoneNumber" 
                 fullWidth
                 variant="standard"
                 value={phoneNumber}
@@ -587,7 +615,7 @@ const navigate =useNavigate();
                     ? "Please enter a valid mobile number"
                     : ""
                 }
-                onChange={handleChangePhoneNumber} // Use the updated handleChangePhoneNumber function
+                onChange={handleChangePhoneNumber} 
               />
               <br></br> <br></br>
               <FormControl error={formErrors.genderError} component="fieldset">
@@ -619,67 +647,69 @@ const navigate =useNavigate();
             </>
           ) : (
             <>
-              {activeStep === 1 && (
-                <>
-                  <br></br>
-                  <h4 className="text-primary">Professional Details</h4>
-                  <p>Help us understand you better</p>
-                  <br></br>
-                  <FormControl
-                    error={formErrors.experienceError}
-                    component="fieldset"
-                  >
-                    <FormLabel component="legend">Experience</FormLabel>
-                    <RadioGroup
-                      row
-                      aria-label="experience"
-                      name="Experience"
-                      value={experience}
-                      onChange={(e) => setExperience(e.target.value)}
-                    >
-                      <FormControlLabel
-                        value="Fresher"
-                        control={<Radio />}
-                        label="I am Fresher"
-                      />
-                      <FormControlLabel
-                        value="Experienced"
-                        control={<Radio />}
-                        label="I am Experienced"
-                      />
-                    </RadioGroup>
-                    {formErrors.experienceError && (
-                      <p style={{ color: "red", margin: "0" }}>
-                        Please select your experience
-                      </p>
-                    )}
-                  </FormControl>
-                  <br></br>
-                  <br></br>
-                  <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Current location
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={location}
-                        label="Current location"
-                        onChange={handleChange}
-                      >
-                        <MenuItem value="Chandigarh">Chandigarh</MenuItem>
-                        <MenuItem value="Delhi">Delhi</MenuItem>
-                        <MenuItem value="Himachal">Himachal</MenuItem>
-                        <MenuItem value="Mumbai">Mumbai</MenuItem>
-                        <MenuItem value="Chennai">Chennai</MenuItem>
-                        <MenuItem value="Hyderabad">Hyderabad</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </>
+                 {activeStep === 1 && (
+        <>
+          <br />
+          <h4 className="text-primary">Professional Details</h4>
+          <p>Help us understand you better</p>
+          <br />
+          <FormControl error={formErrors.experienceError} component="fieldset">
+            <FormLabel component="legend">Experience</FormLabel>
+            <RadioGroup
+              row
+              aria-label="experience"
+              name="Experience"
+              value={experience}
+              onChange={(e) => setExperience(e.target.value)}
+            >
+              <FormControlLabel
+                value="Fresher"
+                control={<Radio />}
+                label="I am Fresher"
+              />
+              <FormControlLabel
+                value="Experienced"
+                control={<Radio />}
+                label="I am Experienced"
+              />
+            </RadioGroup>
+            {formErrors.experienceError && (
+              <p style={{ color: "red", margin: "0" }}>
+                Please select your experience
+              </p>
+            )}
+          </FormControl>
+          <br />
+          <br />
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Current location
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={location}
+                label="Current location"
+                onChange={handleChange}
+                error={formErrors.locationError} // Apply error state to the Select component
+              >
+                <MenuItem value="Chandigarh">Chandigarh</MenuItem>
+                <MenuItem value="Delhi">Delhi</MenuItem>
+                <MenuItem value="Himachal">Himachal</MenuItem>
+                <MenuItem value="Mumbai">Mumbai</MenuItem>
+                <MenuItem value="Chennai">Chennai</MenuItem>
+                <MenuItem value="Hyderabad">Hyderabad</MenuItem>
+              </Select>
+              {formErrors.locationError && (
+                <p style={{ color: "red", margin: "0" }}>
+                  Please enter your current location
+                </p>
               )}
-
+            </FormControl>
+          </Box>
+        </>
+      )}
               {activeStep === 2 && (
                 <>
                   <br></br>
@@ -695,6 +725,7 @@ const navigate =useNavigate();
                         id="demo-simple-select"
                         value={highestQualification}
                         label="Highest Qualification"
+                        error={formErrors.highestQualificationError}
                         onChange={(e) =>
                           setHighestQualification(e.target.value)
                         }
@@ -706,6 +737,11 @@ const navigate =useNavigate();
                         <MenuItem value="llb">llb</MenuItem>
                         <MenuItem value="Phd">Phd</MenuItem>
                       </Select>
+                      {formErrors.highestQualificationError && (
+                <p style={{ color: "red", margin: "0" }}>
+                  Please enter your qualification
+                </p>
+              )}
                     </FormControl>
                   </Box>
                   <br />
@@ -718,6 +754,7 @@ const navigate =useNavigate();
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={fieldOfStudy}
+                        error={formErrors.fieldOfStudyError}
                         label="Select your field"
                         onChange={(e) => setFieldOfStudy(e.target.value)}
                       >
@@ -734,6 +771,11 @@ const navigate =useNavigate();
                         </MenuItem>
                         <MenuItem value="Data Operator">Data Operator</MenuItem>
                       </Select>
+                      {formErrors.fieldOfStudyError && (
+                <p style={{ color: "red", margin: "0" }}>
+                  Please enter your  field
+                </p>
+              )}
                     </FormControl>
                   </Box>
                   <br />
@@ -746,6 +788,7 @@ const navigate =useNavigate();
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={university}
+                        error={formErrors.universityError}
                         label="University/Institute"
                         onChange={(e) => setUniversity(e.target.value)}
                       >
@@ -761,6 +804,11 @@ const navigate =useNavigate();
                         <MenuItem value="Hptu">Hptu</MenuItem>
                         <MenuItem value="J&K">J&K University</MenuItem>
                       </Select>
+                      {formErrors.universityError && (
+                <p style={{ color: "red", margin: "0" }}>
+                  Please enter your University
+                </p>
+              )}
                     </FormControl>
                   </Box>
                   <br />
@@ -773,8 +821,14 @@ const navigate =useNavigate();
                     fullWidth
                     variant="standard"
                     value={graduationYear}
+                    error={formErrors.graduationYearError}
                     onChange={(e) => setGraduationYear(e.target.value)}
                   />
+                  {formErrors.graduationYearError && (
+                <p style={{ color: "red", margin: "0" }}>
+                  Field Required
+                </p>
+              )}
                   <br></br> <br></br>
                   <FormControl
                     error={formErrors.educationTypeError} // Change genderError to educationTypeError
@@ -830,9 +884,11 @@ const navigate =useNavigate();
                         multiple
                         value={personName}
                         onChange={handleChange1}
+                        onClick={validateFields}
                         input={<OutlinedInput label="Key Skills" />}
                         renderValue={(selected) => selected.join(", ")}
                         MenuProps={MenuProps}
+                       
                       >
                         {names.map((name) => (
                           <MenuItem key={name} value={name}>
@@ -841,6 +897,7 @@ const navigate =useNavigate();
                           </MenuItem>
                         ))}
                       </Select>
+                      {errors.skillsError && <span style={{ color: 'red' }}>{errors.skillsError}</span>}
                     </FormControl>
                     <br></br> <br></br>
                     <FormControl sx={{ m: 1, width: 500 }}>
@@ -853,6 +910,7 @@ const navigate =useNavigate();
                         multiple
                         value={personName1}
                         onChange={handleChange2}
+                        onClick={validateFields}
                         input={<OutlinedInput label="Key Skills" />}
                         renderValue={(selected) => selected.join(", ")}
                         MenuPropss={MenuPropss}
@@ -866,6 +924,7 @@ const navigate =useNavigate();
                           </MenuItem>
                         ))}
                       </Select>
+                      {errors.industryError && <span style={{ color: 'red' }}>{errors.industryError}</span>}
                     </FormControl>
                     <br></br> <br></br>
                     <FormControl sx={{ m: 1, width: 500 }}>
@@ -878,6 +937,7 @@ const navigate =useNavigate();
                         multiple
                         value={personName2}
                         onChange={handleChange3}
+                        onClick={validateFields}
                         input={<OutlinedInput label="Department/Function" />}
                         renderValue={(selected) => selected.join(", ")}
                         MenuPropsss={MenuPropsss}
@@ -891,6 +951,7 @@ const navigate =useNavigate();
                           </MenuItem>
                         ))}
                       </Select>
+                      {errors.departmentError && <span style={{ color: 'red' }}>{errors.departmentError}</span>}
                     </FormControl>
                     <br></br> <br></br>
                     <FormControl sx={{ m: 1, width: 500 }}>
@@ -903,6 +964,7 @@ const navigate =useNavigate();
                         multiple
                         value={personName3}
                         onChange={handleChange33}
+                        onClick={validateFields}
                         input={<OutlinedInput label="Preferred Role" />}
                         renderValue={(selected) => selected.join(", ")}
                         MenuPropsssss={MenuPropsssss}
@@ -916,6 +978,7 @@ const navigate =useNavigate();
                           </MenuItem>
                         ))}
                       </Select>
+                      {errors.roleError && <span style={{ color: 'red' }}>{errors.roleError}</span>}
                     </FormControl>
                     <br></br>
                     <br></br>
@@ -929,6 +992,7 @@ const navigate =useNavigate();
                         multiple
                         value={personName4}
                         onChange={handleChange333}
+                         onClick={validateFields}
                         input={<OutlinedInput label="Preferred Location" />}
                         renderValue={(selected) => selected.join(", ")}
                         MenuPropssssss={MenuPropssssss}
@@ -942,6 +1006,7 @@ const navigate =useNavigate();
                           </MenuItem>
                         ))}
                       </Select>
+                      {errors.locationError && <span style={{ color: 'red' }}>{errors.locationError}</span>}
                     </FormControl>
                   </div>
                 </>
@@ -958,14 +1023,15 @@ const navigate =useNavigate();
             </>
           ) : (
             <>
+              {/* {activeStep > 0 && (
+                <Button onClick={() => setShowPreviousFields(true)}>Back</Button>
+              )} */}
               <Button onClick={handleClose}>Cancel</Button>
+              {/* <Button onClick={handleContinue}>Continue</Button> */}
               {activeStep <= 2 ? (
                 <Button onClick={handleContinue}>Continue</Button>
               ) : (
-                <Button onClick={handleSubmit}>Register
-                
-                </Button>
-               
+                <Button onClick={handleSubmit}>Register</Button>
               )}
             </>
           )}
