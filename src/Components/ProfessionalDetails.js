@@ -64,8 +64,6 @@ export default function ProfessionalDetail() {
               fullWidth
               variant="standard"
             />
-  
-  
   <TextField
               autoFocus
               margin="dense"

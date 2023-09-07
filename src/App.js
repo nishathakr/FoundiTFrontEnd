@@ -6,10 +6,12 @@ import './'
 
 
 import { BrowserRouter, Route,Routes } from 'react-router-dom';
-import index from './Components/index.jsx';
+//import index from './Components/index.jsx';
 import Register from './Register';
 import ForgotPassword from './Components/forgotpassword.js';
 import Otp from './Components/otp';
+import Update from './Components/Update';
+import ProfileUpdate from './Components/ProfileUpdate';
 // import Routes from './Routes'; 
 function App() {
   return (
@@ -21,13 +23,10 @@ function App() {
   <Route path='register'element={<Register/>}/>
   <Route path='forgotpassword'element={<ForgotPassword/>}/>
   <Route path='otp'element={<Otp/>}/>
+  <Route path='update' element={<Update/>}/>
+  <Route path='profileupdate' element={<ProfileUpdate/>}/>
 
-
-
-
-   <Route path=''element={<Index/>}/>
-     
-
+  <Route path=''element={<Index/>}/>
 </Routes>
 
 </BrowserRouter>

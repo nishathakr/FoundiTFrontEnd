@@ -29,6 +29,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const getCookie = (name) => {
   const cookies = document.cookie.split(";");
 
@@ -42,8 +45,6 @@ const getCookie = (name) => {
   return "";
 };
 
-
-
 const Index = () => {
   useEffect(() => {
     // Get the email from the cookie
@@ -55,19 +56,21 @@ const Index = () => {
 
   const handleLogout = () => {
     // Remove the email from the cookie
-    document.cookie = "UserEmail=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "UserEmail=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     setUserEmail("");
   };
 
   const [open, setOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [email, setEmail] = useState("");
-  
+
   const [password, setPassword] = useState("");
 
   const [emailError, setEmailError] = useState("");
 
   const [passwordError, setPasswordError] = useState("");
+  const navigate = useNavigate();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -83,8 +86,8 @@ const Index = () => {
     setEmailError("");
 
     setPasswordError("");
-     // Reset the user email
-  setUserEmail("");
+    // Reset the user email
+    setUserEmail("");
   };
 
   useEffect(() => {
@@ -134,46 +137,54 @@ const Index = () => {
       try {
         debugger;
         console.log(formData);
-    
-        const response = await axios.post("https://localhost:7177/api/Login/Login", formData);
-    
-        console.log(response.data);
-    
+
+        const response = await axios.post(
+          "https://localhost:7177/api/Login/Login",
+          formData
+        );
+
+        console.log(response.data.userId);
+       
+        //  var userId = response.data.user.id;
+        // localStorage.setItem('userId', userId);
+        
         if (response.status === 200) {
           debugger;
           handleClose();
           setUserEmail(email);
-          
-          // Set the email in the cookie
-          document.cookie = `UserEmail=${email}; expires=${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString()}; secure; sameSite=None`;
         
+         const userId = response.data.userId;
+         console.log(response.data);
+         console.log("login request");
+         localStorage.setItem('userId', userId);
+
+          // Set the email in the cookie
+          document.cookie = `UserEmail=${email}; expires=${new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toUTCString()}; secure; sameSite=None`;
+
           Swal.fire({
             title: "User signed in successfully",
             icon: "success",
           }).then(() => {
-            // Redirect the user to the specified link
-            window.location.href = "https://www.foundit.in/seeker/dashboard";
+          navigate("/profileupdate")
+          });
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: response.data.message,
+            icon: "error",
           });
         }
-         else {
-            Swal.fire({
-                title: "Error",
-                text: response.data.message,
-                icon: "error",
-            });
-        }
-    } catch (error) {
+      } catch (error) {
         handleClose();
         console.error(error);
         Swal.fire({
-            title: "Error",
-            text: "invalid email or password ",
-            icon: "error",
+          title: "Error",
+          text: "invalid email or password ",
+          icon: "error",
         });
-    }
-
-   
-
+      }
     }
 
     return isValid;
@@ -192,7 +203,6 @@ const Index = () => {
                   <Register />{" "}
                 </a>
               </li>
-
               <br />
 
               <br />
@@ -286,32 +296,29 @@ const Index = () => {
               helperText={passwordError}
             />
           </DialogContent>
-        
+
           <DialogActions>
-  <div className="flex-grow-1">
-    <li className="text-primary">
-    <ForgotPassword />
-    </li>
-  </div>
-  <Button onClick={handleClose}>Cancel</Button>
+            <div className="flex-grow-1">
+              <li className="text-primary">
+                <ForgotPassword />
+              </li>
+            </div>
+            <Button onClick={handleClose}>Cancel</Button>
 
-  <ToastContainer
-    position="top-right"
-    autoClose={3000}
-    hideProgressBar
-    newestOnTop={false}
-    closeOnClick
-    rtl={false}
-    pauseOnFocusLoss
-    draggable
-    pauseOnHover
-  />
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
 
-  <Button onClick={() => validateForm()}>
-    Login
-  </Button>
-</DialogActions>
-
+            <Button onClick={() => validateForm()}>Login</Button>
+          </DialogActions>
         </Dialog>
 
         <header className="header-area header-sticky">
@@ -331,35 +338,38 @@ const Index = () => {
                   {/* ***** Menu Start ***** */}
 
                   <ul className="nav">
-  {userEmail ? (
-    <li className="text-white"> 
-      <p className="text-white">Welcome</p>
-      <span>{userEmail}</span>
-    </li>
-  ) : (
-    <>
-      <li>
-        <a className="active" onClick={handleClickOpen}>
-          Login
-        </a>
-      </li>
-      <li>
-        <a>
-          <Register />
-        </a>
-      </li>
-    </>
-   
-  )}
-  <li>
-    <a className="active" href="contact.html">Contact</a>
-  </li>
-  <li></li>
-  {userEmail && (
-    <li onClick={handleLogout}>Logout</li>
-  )}
-</ul>
-
+                    {userEmail ? (
+                      <li className="text-white">
+                        <p className="text-white">Welcome</p>
+                        <span>{userEmail}</span>
+                      </li>
+                    ) : (
+                      <>
+                        <li>
+                          <a className="active" onClick={handleClickOpen}>
+                            Login
+                          </a>
+                        </li>
+                        <li>
+                          <a>
+                            <Register />
+                          </a>
+                        </li>
+                        {/* <li>
+                          <a>
+                            <Link to="/Update">Update</Link>
+                          </a>
+                        </li> */}
+                      </>
+                    )}
+                    <li>
+                      <a className="active" href="contact.html">
+                        Contact
+                      </a>
+                    </li>
+                    <li></li>
+                    {userEmail && <li onClick={handleLogout}>Logout</li>}
+                  </ul>
 
                   <a className="menu-trigger">
                     <span>Menu</span>
